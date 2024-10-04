@@ -8,9 +8,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/services/hardware_keyboard.dart';
 import 'package:flutter/src/services/keyboard_key.g.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
+import 'package:pixel_adventure/components/player_hitbox.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
-enum PlayerDirection { left, right, up, down, none }
+enum PlayerDirection {
+  left,
+  right,
+  up,
+  down,
+  none,
+  topRight,
+  topLeft,
+  bottomRight,
+  bottomLeft
+}
 
 class Player extends SpriteAnimationGroupComponent
     with HasGameRef<PixelAdventure>, KeyboardHandler {
@@ -36,12 +47,19 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation swim;
   late final SpriteAnimation climb;
 
+  PlayerHitbox hitbox = PlayerHitbox(
+    height: 28,
+    width: 28,
+    x: 10,
+    y: 4,
+  );
+
   final double stepTime = 0.05;
   double horizntalMovement = 0;
-  final double _gravity = 19.8;
+  final double _gravity = 90.8;
   final double _jumpForce = 500;
   final double _terminalVelocity = 250;
-  bool isJumping = false;
+  bool isJumping = true;
 
   PlayerDirection direction = PlayerDirection.left;
   double moveSpeed = 100;
@@ -51,6 +69,8 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   FutureOr<void> onLoad() {
+    //focus g
+
     _loadAllAnimations();
     debugMode = true;
     return super.onLoad();
@@ -61,7 +81,7 @@ class Player extends SpriteAnimationGroupComponent
     _updatePlayerMovement(dt);
     checkHorizontalCollisions();
     _applyGravity(dt);
-    _checkVerticalCollisions();
+    // _checkVerticalCollisions();
     super.update(dt);
   }
 
@@ -128,10 +148,20 @@ class Player extends SpriteAnimationGroupComponent
 
   void _updatePlayerMovement(dt) {
     double dirX = 0;
+    double dirY = 0;
     switch (direction) {
+      case PlayerDirection.down:
+        current = 'idle';
+        break;
       case PlayerDirection.up:
         current = 'jump';
-        _playerJump(dt);
+
+        // _playerJump(dt);
+        if (isJumping) {
+          print(isJumping);
+          isJumping = true;
+          dirY = -moveSpeed;
+        }
 
         break;
       case PlayerDirection.left:
@@ -158,7 +188,8 @@ class Player extends SpriteAnimationGroupComponent
       default:
         break;
     }
-    velocity = Vector2(dirX, 0.0);
+    //for jumping too
+    velocity = Vector2(dirX, dirY);
     position += velocity * dt;
   }
 
@@ -190,28 +221,28 @@ class Player extends SpriteAnimationGroupComponent
     position += velocity * dt;
   }
 
-  void _checkVerticalCollisions() {
-    final playerRect = toRect();
-    for (final block in collisionBlocks) {
-      final blockRect = block.toRect();
-      if (playerRect.overlaps(blockRect)) {
-        final intersection = playerRect.intersect(blockRect);
-        if (intersection.width > intersection.height) {
-          if (playerRect.top < blockRect.top) {
-            position = Vector2(position.x, position.y - intersection.height);
-          } else {
-            position = Vector2(position.x, position.y + intersection.height);
-          }
-        } else {
-          if (playerRect.left < blockRect.left) {
-            position = Vector2(position.x - intersection.width, position.y);
-          } else {
-            position = Vector2(position.x + intersection.width, position.y);
-          }
-        }
-      }
-    }
-  }
+  // void _checkVerticalCollisions() {
+  //   final playerRect = toRect();
+  //   for (final block in collisionBlocks) {
+  //     final blockRect = block.toRect();
+  //     if (playerRect.overlaps(blockRect)) {
+  //       final intersection = playerRect.intersect(blockRect);
+  //       if (intersection.width > intersection.height) {
+  //         if (playerRect.top < blockRect.top) {
+  //           position = Vector2(position.x, position.y - intersection.height);
+  //         } else {
+  //           position = Vector2(position.x, position.y + intersection.height);
+  //         }
+  //       } else {
+  //         if (playerRect.left < blockRect.left) {
+  //           position = Vector2(position.x - intersection.width, position.y);
+  //         } else {
+  //           position = Vector2(position.x + intersection.width, position.y);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   void _playerJump(dt) {
     if (!isJumping) return;

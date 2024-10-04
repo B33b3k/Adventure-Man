@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:pixel_adventure/components/Fruit.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/player.dart';
 
@@ -20,7 +21,16 @@ class Level extends World {
     level = await TiledComponent.load('$levelName.tmx', Vector2.all(16));
     add(level);
 
+    _scrollingBackground();
+    _spawningObjects();
+    _collisionLayer();
+
     // Get the spawn point layer
+
+    await super.onLoad();
+  }
+
+  void _spawningObjects() {
     final spawnPointLayer = level.tileMap.getLayer<ObjectGroup>('SpawnPoint');
 
     // Check if the spawn point layer exists
@@ -33,19 +43,29 @@ class Level extends World {
 
         // Enhanced debug info for spawn points
         print(
-            'Spawn Point: Type: $spawnPoint., Position: ($spawnPointX, $spawnPointY)');
+            'Spawn Point: Type: ${spawnPoint.class_}., Position: ($spawnPointX, $spawnPointY)');
 
         // Check if this spawn point is for the player
         if (spawnPointProperties == 'Player') {
           // Add the player to the level at the specified spawn point
           player.position = Vector2(spawnPointX, spawnPointY);
           add(player);
+        } else if (spawnPointProperties == 'Fruit') {
+          // Add the player to the level at the specified spawn point
+          final fruit = Fruit(
+            fruit: spawnPoint.name,
+            position: Vector2(spawnPointX, spawnPointY),
+            size: Vector2(32, 32),
+          );
+          add(fruit);
         }
       }
     } else {
       print('No spawn point layer found in the tile map.');
     }
+  }
 
+  void _collisionLayer() {
     final collisionLayer = level.tileMap.getLayer<ObjectGroup>('Collision');
     if (collisionLayer != null) {
       for (final collision in collisionLayer.objects) {
@@ -73,6 +93,13 @@ class Level extends World {
     player.collisionBlocks = collisionBlocks;
 
     // Call super.onLoad at the end
-    await super.onLoad();
+  }
+
+  void _scrollingBackground() {
+    final backgroundLayer = level.tileMap.getLayer('Background');
+    if (backgroundLayer != null) {
+      final backgroundColor =
+          backgroundLayer.properties.getValue('BackgroundColor');
+    }
   }
 }
