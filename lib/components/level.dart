@@ -1,8 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:pixel_adventure/components/Fruit.dart';
+import 'package:pixel_adventure/components/CheckPoint.dart';
+import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/player.dart';
+import 'package:pixel_adventure/components/saw.dart';
 
 class Level extends World {
   final String levelName;
@@ -17,6 +19,7 @@ class Level extends World {
 
   @override
   Future<void> onLoad() async {
+    debugMode = false;
     // Load the tiled level
     level = await TiledComponent.load('$levelName.tmx', Vector2.all(16));
     add(level);
@@ -42,22 +45,49 @@ class Level extends World {
         final spawnPointY = spawnPoint.y;
 
         // Enhanced debug info for spawn points
-        print(
-            'Spawn Point: Type: ${spawnPoint.class_}., Position: ($spawnPointX, $spawnPointY)');
 
         // Check if this spawn point is for the player
-        if (spawnPointProperties == 'Player') {
-          // Add the player to the level at the specified spawn point
-          player.position = Vector2(spawnPointX, spawnPointY);
-          add(player);
-        } else if (spawnPointProperties == 'Fruit') {
-          // Add the player to the level at the specified spawn point
-          final fruit = Fruit(
-            fruit: spawnPoint.name,
-            position: Vector2(spawnPointX, spawnPointY),
-            size: Vector2(32, 32),
-          );
-          add(fruit);
+        switch (spawnPointProperties) {
+          case 'Player':
+            // Add the player to the level at the specified spawn point
+            player.position = Vector2(spawnPointX, spawnPointY);
+            add(player);
+            break;
+          case 'Fruit':
+            // Add the player to the level at the specified spawn point
+            final fruit = Fruit(
+              fruit: spawnPoint.name,
+              position: Vector2(spawnPointX, spawnPointY),
+              size: Vector2(32, 32),
+            );
+            add(fruit);
+            break;
+          case 'Saw':
+            final isVertical = spawnPoint.properties.getValue('isVertical');
+            final offPositive = spawnPoint.properties.getValue('offPositive');
+            final offNegative = spawnPoint.properties.getValue('offNegative');
+
+            final saw = Saw(
+              isVertical: isVertical,
+              offNegative: offNegative,
+              offPositive: offPositive,
+              position: Vector2(
+                spawnPointX,
+                spawnPointY,
+              ),
+              size: Vector2(38, 38),
+            );
+            add(saw);
+          case 'CheckPoint':
+            // Add the player to the level at the specified spawn point
+            final checkpoint = Checkpoint(
+              position: Vector2(spawnPointX, spawnPointY),
+              size: Vector2(64, 64),
+            );
+            add(checkpoint);
+            break;
+          default:
+            break;
         }
       }
     } else {

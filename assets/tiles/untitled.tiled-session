@@ -9,24 +9,25 @@
     "fileStates": {
         "level01.tmx": {
             "expandedObjectLayers": [
+                3,
                 2
             ],
-            "scale": 0.5862,
-            "selectedLayer": 0,
+            "scale": 0.9923,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 272.9443875810303,
-                "y": 177.41385192766973
+                "x": 339.61503577547114,
+                "y": 190.466592764285
             }
         },
         "level02.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.6069,
+            "scale": 0.9749,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 385.5659911023233,
-                "y": 278.4643269072335
+                "x": 300.5436455021028,
+                "y": 294.3891681198071
             }
         }
     },
@@ -39,6 +40,7 @@
     "openFiles": [
     ],
     "project": "untitled.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
     ],
     "tileset.lastUsedFormat": "tsx",
