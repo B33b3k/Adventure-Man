@@ -17,17 +17,9 @@ A side-scrolling action game built using **Flutter + Flame Engine**. Pixel Adven
 
 ## 🎥 Gameplay & Tutorial Videos
 
-### Gameplay Preview  
-<video width="640" height="360" controls>
-  <source src="./nxkrSFqL_77Sl6le.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![Gameplay Preview](https://img.youtube.com/vi/TF9MuiRYFJM/0.jpg)](https://youtu.be/TF9MuiRYFJM)  
+*Watch the gameplay video to see the game in action.*
 
-### Adding Player Mechanics Tutorial
-<video width="640" height="360" controls>
-  <source src="./final.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 
 ---
 
